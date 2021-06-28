@@ -98,7 +98,7 @@ class HeadlessWPEmailSettings
     private function get_set_password_url(string $key, string $user_login, bool $new_account = false): string
     {
         $login_encoded = rawurlencode($user_login);
-        $frontend_url  = defined('FRONTEND_APP_URL') ? FRONTEND_APP_URL : '';
+        $frontend_url  = $this->get_frontend_app_url();
 
         $url = untrailingslashit($frontend_url) . "/set-password/?key={$key}&login={$login_encoded}";
 
@@ -107,6 +107,33 @@ class HeadlessWPEmailSettings
         }
 
         return $url;
+    }
+
+    /**
+     * Get frontend app URL. This comes from the 'Extend "Access-Control-Allow-Origin” header'
+     * option on the WPGraphQL CORS plugin settings page.
+     *
+     * @return string Frontend app URL if set, else empty string.
+     */
+    private function get_frontend_app_url(): string
+    {
+        if (function_exists('get_graphql_setting')) {
+            return '';
+        }
+
+        $acao = get_graphql_setting('acao', '', 'graphql_cors_settings');
+
+        if ($acao === '' || $acao === '*') {
+            return '';
+        }
+
+        $acao_urls = explode(PHP_EOL, $acao);
+
+        if (!$acao_urls) {
+            return '';
+        }
+
+        return trim($acao_urls[0]);
     }
 
     /**
