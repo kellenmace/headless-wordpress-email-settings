@@ -117,7 +117,7 @@ class HeadlessWPEmailSettings
      */
     private function get_frontend_app_url(): string
     {
-        if (function_exists('get_graphql_setting')) {
+        if (!function_exists('get_graphql_setting')) {
             return '';
         }
 
