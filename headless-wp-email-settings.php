@@ -43,7 +43,7 @@ class HeadlessWPEmailSettings
      *
      * @return string Site name.
      */
-    private function get_site_name(): string
+    public function get_site_name(): string
     {
         if (is_multisite()) {
             return get_network()->site_name;
